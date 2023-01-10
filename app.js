@@ -58,7 +58,6 @@ let getWeather = () => {
 
         let cityNameDisplay = document.createElement("h1");
 
-        let tempsIcon = document.createElement("i");
         let pressureIcon = document.createElement("i");
         let windIcon = document.createElement("i");
         let humidityIcon = document.createElement("i");
@@ -90,7 +89,6 @@ let getWeather = () => {
 
         cityDiv.append(cityNameDisplay);
 
-        tempsDiv.append(tempsIcon);
         pressureDiv.append(pressureIcon);
         windDiv.prepend(windIcon);
         humidityDiv.append(humidityIcon);
