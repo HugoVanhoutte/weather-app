@@ -1,7 +1,6 @@
 let xhr = new XMLHttpRequest();
 const userInput = document.getElementById("userCity");
 const userButton = document.getElementById("userInput");
-const userLoc = document.getElementById("location");
 
 const tempsDiv = document.getElementById("temps");
 const pressureDiv = document.getElementById("pressure");
@@ -35,10 +34,12 @@ let getCompassFromDeg = function(deg) {
         return "NW";
     }
 }
-userButton.addEventListener("click", ()=> {
-    let cityName = userInput.value
 
-    xhr.open("GET", `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=bad7f45cd820c602ce5c227b81e28489&units=metric`)
+let getWeather = () => {
+
+    let location = `q=${userInput.value}`
+
+    xhr.open("GET", `https://api.openweathermap.org/data/2.5/weather?${location}&appid=bad7f45cd820c602ce5c227b81e28489&units=metric`)
     xhr.responseType = "json";
 
     xhr.onload = function() {
@@ -73,12 +74,11 @@ userButton.addEventListener("click", ()=> {
 
         cityNameDisplay.innerText = xhr.response.name;
 
-        tempsIcon.className = "fa-solid fa-temperature-half fa-7x";
         pressureIcon.className = "fa-solid fa-gauge fa-5x";
         windIcon.className = "fa-solid fa-wind fa-5x";
         humidityIcon.className = "fa-solid fa-droplet fa-5x"
 
-        temp.innerText = `${Math.round(xhr.response.main.temp)} °C`;
+        temp.innerHTML = `<i class="fa-solid fa-temperature-half"></i> ${Math.round(xhr.response.main.temp)} °C`;
         feelsLike.innerHTML = `Ressenti:<br>${Math.round(xhr.response.main.feels_like)} °C`;
         pressure.innerText = `${Math.round(xhr.response.main.pressure)} hPa`;
         windSpeed.innerText = `${Math.round(xhr.response.wind.speed)} m/s`;
@@ -103,10 +103,13 @@ userButton.addEventListener("click", ()=> {
         windDiv.append(windDirection);
         windDiv.append(windDirectionCompass);
     }
-
     xhr.send();
-})
+}
 
-userLoc.addEventListener("click", ()=> {
-    xhr.open("GET", `https://api.openweathermap.org/data/2.5/weather?lat=${}&lon=${}&appid=bad7f45cd820c602ce5c227b81e28489&units=metric`)
+userButton.addEventListener("click", getWeather)
+
+document.body.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+        getWeather();
+    }
 })

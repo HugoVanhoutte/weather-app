@@ -58,14 +58,47 @@ html {
     font-family: Calibri,sans-serif;
     font-weight: bold;
 }
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: black;
+}
+
 header {
-    width: 100%;
+    width: 33%;
     height: 10vh;
 
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
 }
+    header input {
+        width: 100%;
+
+        border-radius: 5px;
+    }
+
+    header #buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+
+        width: 100%;
+    }
+
+    header #buttons button {
+        width: 45%;
+        height: 3rem;
+
+        border-radius: 5px;
+        border: none;
+        background-color: rgba(255,255,255,50%);
+    }
+
 
 main {
     width: 100%;
@@ -79,7 +112,7 @@ main {
 }
 
     main h1 {
-        font-size: 8rem;
+        font-size: 6rem;
     }
 
     main #temps {
@@ -88,7 +121,7 @@ main {
         align-items: center;
         justify-content: center;
 
-        width: 25%;
+        width: 30%;
         height: auto;
     }
 
