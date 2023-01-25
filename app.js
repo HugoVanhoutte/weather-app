@@ -1,20 +1,21 @@
-let xhr = new XMLHttpRequest();
-const userInput = document.getElementById("userCity");
-const userButton = document.getElementById("userInput");
 
-const tempsDiv = document.getElementById("temps");
-const pressureDiv = document.getElementById("pressure");
-const windDiv = document.getElementById("wind");
-const humidityDiv = document.getElementById("humidity");
-const cityDiv = document.getElementById("cityName");
+const userInput = $('#userCity');
+const userButton = $('#userInput');
+
+const tempsDiv = $('#temps');
+const pressureDiv = $('#pressure');
+const windDiv = $('#wind');
+const humidityDiv = $('#humidity');
+const cityDiv = $('#cityName');
 
 let clear = () => {
-    tempsDiv.innerText = "";
-    pressureDiv.innerText = "";
-    windDiv.innerText = "";
-    humidityDiv.innerText = "";
-    cityDiv.innerText = "";
+    tempsDiv.text('');
+    pressureDiv.text('');
+    windDiv.text('');
+    humidityDiv.text('');
+    cityDiv.text('');
 }
+
 let getCompassFromDeg = function(deg) {
     if(deg >= 337.5 || deg < 22.5){
         return "N";
@@ -37,77 +38,57 @@ let getCompassFromDeg = function(deg) {
 
 let getWeather = () => {
 
-    let location = `q=${userInput.value}`
+    let location = `q=${userInput.val()}`
 
-    xhr.open("GET", `https://api.openweathermap.org/data/2.5/weather?${location}&appid=bad7f45cd820c602ce5c227b81e28489&units=metric`)
-    xhr.responseType = "json";
+    $.getJSON({
+        url: `https://api.openweathermap.org/data/2.5/weather?${location}&appid=bad7f45cd820c602ce5c227b81e28489&units=metric`
+    })
+        .done(function (response) {
 
-    xhr.onload = function() {
-        if(xhr.status !== 200) {
+            let main = JSON.stringify(response.weather[0].main.toLowerCase());
+
+            $('body').css('background-image', `url('images/${main}.jpg')`);
+            $('body').css('background-position', 'right');
+            $('body').css('background-size', 'cover');
+
+            clear();
+
+            cityDiv.append(`<h1>${JSON.stringify(response.name)}<h1>`)
+
+            pressureDiv.append(`<i class="fa-solid fa-gauge fa-5x"></i>`);
+            windDiv.prepend('<i class="fa-solid fa-wind fa-5x"></i>');
+            humidityDiv.append('<i class="fa-solid fa-droplet fa-5x"></i>')
+
+
+            tempsDiv.append(`<h2><i class="fa-solid fa-temperature-half"></i>
+            ${Math.round(response.main.temp)} °C</h2>
+            <h3>Ressenti:<br>${Math.round(response.main.feels_like)} °C</h3>`);
+
+            pressureDiv.append(`<p>${Math.round(response.main.pressure)} hPa</p>`);
+
+            humidityDiv.append(`<p>${Math.round(response.main.humidity)} %</p>`);
+
+            windDiv.append(`<p>${Math.round(response.wind.speed)} m/s</p>
+            <p>${response.wind.deg}°</p>
+            <p>${getCompassFromDeg(response.wind.deg)}</p>`);
+
+            userButton.click(getWeather);
+
+            $('body').keydown(function (event) {
+                if (event.key === "Enter") {
+                    getWeather();
+                }
+            })
+        })
+
+
+        .fail(function () {
             alert("Ville Introuvable");
-            userInput.value = "";
-        }
-
-        let main = xhr.response.weather[0].main.toLowerCase();
-        console.log(main);
-        document.body.style.backgroundImage = `url('images/${main}.jpg')`;
-        document.body.style.backgroundPosition = "right";
-        document.body.style.backgroundSize = "cover";
-
-        clear();
-
-        let cityNameDisplay = document.createElement("h1");
-
-        let pressureIcon = document.createElement("i");
-        let windIcon = document.createElement("i");
-        let humidityIcon = document.createElement("i");
-
-        let temp = document.createElement("h2");
-        let feelsLike = document.createElement("h3");
-        let pressure = document.createElement("p");
-        let humidity = document.createElement("p");
-        let windSpeed = document.createElement("p");
-        let windDirection = document.createElement("p");
-        let windDirectionCompass = document.createElement("p");
-
-
-        cityNameDisplay.innerText = xhr.response.name;
-
-        pressureIcon.className = "fa-solid fa-gauge fa-5x";
-        windIcon.className = "fa-solid fa-wind fa-5x";
-        humidityIcon.className = "fa-solid fa-droplet fa-5x"
-
-        temp.innerHTML = `<i class="fa-solid fa-temperature-half"></i> ${Math.round(xhr.response.main.temp)} °C`;
-        feelsLike.innerHTML = `Ressenti:<br>${Math.round(xhr.response.main.feels_like)} °C`;
-        pressure.innerText = `${Math.round(xhr.response.main.pressure)} hPa`;
-        windSpeed.innerText = `${Math.round(xhr.response.wind.speed)} m/s`;
-        windDirection.innerText = `${xhr.response.wind.deg}°`;
-        windDirectionCompass.innerText = getCompassFromDeg(xhr.response.wind.deg);
-        humidity.innerText = `${Math.round(xhr.response.main.humidity)} %`;
-
-
-
-        cityDiv.append(cityNameDisplay);
-
-        pressureDiv.append(pressureIcon);
-        windDiv.prepend(windIcon);
-        humidityDiv.append(humidityIcon);
-
-        tempsDiv.append(temp);
-        tempsDiv.append(feelsLike);
-        pressureDiv.append(pressure);
-        humidityDiv.append(humidity);
-        windDiv.append(windSpeed);
-        windDiv.append(windDirection);
-        windDiv.append(windDirectionCompass);
-    }
-    xhr.send();
+            userInput.val('');
+        })
 }
 
-userButton.addEventListener("click", getWeather)
 
-document.body.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-        getWeather();
-    }
-})
+
+
+
