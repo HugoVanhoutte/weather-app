@@ -1,21 +1,3 @@
-
-const userInput = $('#userCity');
-const userButton = $('#userInput');
-
-const tempsDiv = $('#temps');
-const pressureDiv = $('#pressure');
-const windDiv = $('#wind');
-const humidityDiv = $('#humidity');
-const cityDiv = $('#cityName');
-
-let clear = () => {
-    tempsDiv.text('');
-    pressureDiv.text('');
-    windDiv.text('');
-    humidityDiv.text('');
-    cityDiv.text('');
-}
-
 let getCompassFromDeg = function(deg) {
     if(deg >= 337.5 || deg < 22.5){
         return "N";
@@ -36,59 +18,57 @@ let getCompassFromDeg = function(deg) {
     }
 }
 
+const userInput = $('#userCity');
+const userButton = $('#userInput');
+const tempsDiv = $('#temps');
+const pressureDiv = $('#pressure');
+const windDiv = $('#wind');
+const humidityDiv = $('#humidity');
+const cityDiv = $('#cityName');
+const body = $('body');
+
+let clear = () =>  {
+    tempsDiv.text('');
+    pressureDiv.text('');
+    windDiv.text('');
+    humidityDiv.text('');
+    cityDiv.text('');
+}
+
 let getWeather = () => {
 
     let location = `q=${userInput.val()}`
 
-    $.getJSON({
-        url: `https://api.openweathermap.org/data/2.5/weather?${location}&appid=bad7f45cd820c602ce5c227b81e28489&units=metric`
+    $.ajax({
+        url: `https://api.openweathermap.org/data/2.5/weather?${location}&appid=bad7f45cd820c602ce5c227b81e28489&units=metric`,
+        method: "GET",
+        dataType: "json"
     })
         .done(function (response) {
-
-            let main = JSON.stringify(response.weather[0].main.toLowerCase());
-
-            $('body').css('background-image', `url('images/${main}.jpg')`);
-            $('body').css('background-position', 'right');
-            $('body').css('background-size', 'cover');
+            let main = response.weather[0].main.toLowerCase();
+            body.css({'background-image': `url('images/${main}.jpg')`,'background-position': 'right', 'background-size': 'cover'})
 
             clear();
 
-            cityDiv.append(`<h1>${JSON.stringify(response.name)}<h1>`)
-
-            pressureDiv.append(`<i class="fa-solid fa-gauge fa-5x"></i>`);
-            windDiv.prepend('<i class="fa-solid fa-wind fa-5x"></i>');
-            humidityDiv.append('<i class="fa-solid fa-droplet fa-5x"></i>')
-
-
-            tempsDiv.append(`<h2><i class="fa-solid fa-temperature-half"></i>
-            ${Math.round(response.main.temp)} °C</h2>
-            <h3>Ressenti:<br>${Math.round(response.main.feels_like)} °C</h3>`);
-
-            pressureDiv.append(`<p>${Math.round(response.main.pressure)} hPa</p>`);
-
-            humidityDiv.append(`<p>${Math.round(response.main.humidity)} %</p>`);
-
-            windDiv.append(`<p>${Math.round(response.wind.speed)} m/s</p>
-            <p>${response.wind.deg}°</p>
-            <p>${getCompassFromDeg(response.wind.deg)}</p>`);
-
-            userButton.click(getWeather);
-
-            $('body').keydown(function (event) {
-                if (event.key === "Enter") {
-                    getWeather();
-                }
-            })
+            cityDiv.append(`<h1>${response.name}</h1>`);
+            pressureDiv.append(`<i class="fa-solid fa-gauge fa-5x"></i><p>${Math.round(response.main.pressure)} hPa</p>`);
+            windDiv.prepend(`<i class="fa-solid fa-wind fa-5x"></i><p>${Math.round(response.wind.speed)} m/s</p><p>${response.wind.deg}°</p><p>${getCompassFromDeg(response.wind.deg)}</p>`);
+            humidityDiv.append(`<i class="fa-solid fa-droplet fa-5x"></i><p>${Math.round(response.main.humidity)} %</p>`);
+            tempsDiv.append(`<h2><i class="fa-solid fa-temperature-half"></i> ${Math.round(response.main.temp)} °C</h2><h3>Ressenti:<br>${Math.round(response.main.feels_like)} °C</h3>`);
         })
 
-
         .fail(function () {
-            alert("Ville Introuvable");
-            userInput.val('');
+            alert('Ville Introuvable');
+            userInput.val();
         })
 }
 
+userButton.click(function () {
+    getWeather();
+})
 
-
-
-
+body.keydown(function (event) {
+    if (event.key === "Enter"){
+        getWeather();
+    }
+})
