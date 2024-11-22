@@ -27,7 +27,7 @@ jobs:
         username: ${{ secrets.FTP_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: 22
-        source: "dist/*"
+        source: "dist/"
         target: "/var/www/weather-app.hugo-vanhoutte.dev/"
         
     - name: Execute SSH commands to move content
