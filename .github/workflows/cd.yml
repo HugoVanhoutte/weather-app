@@ -41,4 +41,5 @@ jobs:
           # Move contents of dist to target directory
           mv /var/www/weather-app.hugo-vanhoutte.dev/dist/ /var/www/weather-app.hugo-vanhoutte.dev/
           # Remove the empty dist folder
-          rmdir /var/www/weather-app.hugo-vanhoutte.dev/dist/
+          sudo rm -rf /var/www/weather-app.***/dist/
+
