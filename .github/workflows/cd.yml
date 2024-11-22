@@ -1,0 +1,31 @@
+name: cd-weather-app
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout repository
+      uses: actions/checkout@v3
+
+    - name: move files to dist/
+      run: |
+        mkdir dist
+        cp index.html style.css app.js dist/
+
+    - name: Deploy via SFTP
+      uses: appleboy/scp-action@v0.1.5
+      with:
+        debug: true
+        host: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        port: 22
+        source: "dist/*"
+        target: "/var/www/weather-app.hugo-vanhoutte.dev/"
