@@ -19,6 +19,18 @@ jobs:
         mkdir dist
         cp index.html style.css app.js dist/
 
+    - name: Execute SSH commands to resetfolder
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        port: 22
+        script: |
+          mv /var/www/weather-app.hugo-vanhoutte.dev/dist/* /var/www/weather-app.hugo-vanhoutte.dev/
+          # Remove the empty dist folder
+          sudo rm -rf /var/www/weather-app.hugo-vanhoutte.dev/*
+
     - name: Deploy via SFTP
       uses: appleboy/scp-action@v0.1.5
       with:
