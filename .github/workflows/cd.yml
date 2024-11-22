@@ -39,6 +39,6 @@ jobs:
         port: 22
         script: |
           # Move contents of dist to target directory
-          mv /var/www/shifumi.hugo-vanhoutte.dev/dist/ /var/www/shifumi.hugo-vanhoutte.dev/
+          mv /var/www/weather-app.hugo-vanhoutte.dev/dist/ /var/www/weather-app.hugo-vanhoutte.dev/
           # Remove the empty dist folder
-          rmdir /var/www/shifumi.hugo-vanhoutte.dev/dist
+          rmdir /var/www/weather-app.hugo-vanhoutte.dev/dist
