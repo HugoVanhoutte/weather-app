@@ -24,12 +24,12 @@ jobs:
       with:
         host: ${{ secrets.FTP_HOST }}
         username: ${{ secrets.FTP_USER }}
-        key: ${{ secrets.SSH_KEY }}
+        password: ${{ secrets.SSH_PASSWORD }}
         port: 22
         script: |
-          mv /var/www/weather-app.hugo-vanhoutte.dev/dist/* /var/www/weather-app.hugo-vanhoutte.dev/
+          mv /var/www/weather-app/dist/* /var/www/weather-app/
           # Remove the empty dist folder
-          sudo rm -rf /var/www/weather-app.hugo-vanhoutte.dev/*
+          sudo rm -rf /var/www/weather-app/*
 
     - name: Deploy via SFTP
       uses: appleboy/scp-action@v0.1.5
@@ -37,21 +37,9 @@ jobs:
         debug: true
         host: ${{ secrets.FTP_HOST }}
         username: ${{ secrets.FTP_USER }}
-        key: ${{ secrets.SSH_KEY }}
+        password: ${{ secrets.SSH_PASSWORD }}
         port: 22
-        source: "dist/"
-        target: "/var/www/weather-app.hugo-vanhoutte.dev/"
-        
-    - name: Execute SSH commands to move content
-      uses: appleboy/ssh-action@v0.1.5
-      with:
-        host: ${{ secrets.FTP_HOST }}
-        username: ${{ secrets.FTP_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        port: 22
-        script: |
-          # Move contents of dist to target directory
-          mv /var/www/weather-app.hugo-vanhoutte.dev/dist/* /var/www/weather-app.hugo-vanhoutte.dev/
-          # Remove the empty dist folder
-          sudo rm -rf /var/www/weather-app.***/dist/
+        source: "dist/**"
+        strip_content: 1
+        target: "/var/www/weather-app/"
 
