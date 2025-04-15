@@ -17,7 +17,7 @@ jobs:
     - name: move files to dist/
       run: |
         mkdir dist
-        cp index.html style.css app.js dist/
+        cp index.html style.css app.js images/ dist/
 
     - name: Execute SSH commands to resetfolder
       uses: appleboy/ssh-action@v0.1.5
