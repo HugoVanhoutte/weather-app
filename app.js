@@ -49,7 +49,6 @@ let getWeather = () => {
         }
 
         let main = xhr.response.weather[0].main.toLowerCase();
-        console.log(main);
         document.body.style.backgroundImage = `url('images/${main}.jpg')`;
         document.body.style.backgroundPosition = "right";
         document.body.style.backgroundSize = "cover";
