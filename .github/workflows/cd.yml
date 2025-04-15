@@ -27,9 +27,9 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         port: 22
         script: |
-          mv /var/www/weather-app/dist/* /var/www/weather-app/
+          mv /var/www/weather-app/public/dist/* /var/www/weather-app/public/
           # Remove the empty dist folder
-          sudo rm -rf /var/www/weather-app/*
+          sudo rm -rf /var/www/weather-app/public/*
 
     - name: Deploy via SFTP
       uses: appleboy/scp-action@v0.1.5
@@ -41,5 +41,5 @@ jobs:
         port: 22
         source: "dist/**"
         strip_components: 1
-        target: "/var/www/weather-app/"
+        target: "/var/www/weather-app/public/"
 
